@@ -1,28 +1,34 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import App from "./components/App";
 import { produce } from "immer";
 
+export interface ItodoItem {
+  no: number;
+  todo: string;
+  done: boolean;
+}
+
 const AppContainer = () => {
-  const [todoList, setTodoList] = useState([
+  const [todoList, setTodoList] = useState<ItodoItem[]>([
     { no: 1, todo: "React학습1", done: false },
     { no: 2, todo: "React학습2", done: false },
     { no: 3, todo: "React학습3", done: true },
     { no: 4, todo: "React학습4", done: false },
   ]);
 
-  const addTodo = (todo) => {
+  const addTodo = (todo: string) => {
     let newTodoList = produce(todoList, (draft) => {
       draft.push({ no: new Date().getTime(), todo: todo, done: false });
     });
     setTodoList(newTodoList);
   };
 
-  const deleteTodo = (no) => {
+  const deleteTodo = (no: number) => {
     let newTodoList = todoList.filter((item) => item.no !== no);
     setTodoList(newTodoList);
   };
 
-  const toggleDone = (no) => {
+  const toggleDone = (no: number) => {
     let index = todoList.findIndex((item) => item.no === no);
     let newTodoList = produce(todoList, (draft) => {
       draft[index].done = !draft[index].done;
@@ -30,14 +36,7 @@ const AppContainer = () => {
     setTodoList(newTodoList);
   };
 
-  return (
-    <App
-      todoList={todoList}
-      addTodo={addTodo}
-      deleteTodo={deleteTodo}
-      toggleDone={toggleDone}
-    />
-  );
+  return <App todoList={todoList} addTodo={addTodo} deleteTodo={deleteTodo} toggleDone={toggleDone} />;
 };
 
 export default AppContainer;

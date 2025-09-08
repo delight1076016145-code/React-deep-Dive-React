@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { KeyboardEvent, useState } from "react";
 
-const InputTodo = ({ addTodo }) => {
+type PropsType = {
+  addTodo: (todo: string) => void;
+};
+
+const InputTodo = ({ addTodo }: PropsType) => {
   const [todo, setTodo] = useState("");
 
   const addHandler = () => {
     addTodo(todo);
     setTodo("");
-  }
-  const enterInput = (e) => {
+  };
+  const enterInput = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-        addHandler();
+      addHandler();
     }
-  }
+  };
 
   return (
     <div className="row">
@@ -24,11 +28,12 @@ const InputTodo = ({ addTodo }) => {
             name="msg"
             placeholder="할일을 여기에 입력!"
             value={todo}
-            onChange={ (e)=> setTodo(e.target.value) }
+            onChange={(e) => setTodo(e.target.value)}
             onKeyUp={enterInput}
           />
-          <span className="btn btn-primary input-group-addon"
-              onClick={addHandler}>추가</span>
+          <span className="btn btn-primary input-group-addon" onClick={addHandler}>
+            추가
+          </span>
         </div>
       </div>
     </div>
