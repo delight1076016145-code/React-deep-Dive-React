@@ -1,16 +1,17 @@
-import { useContext, useState } from "react";
-import { useParams, useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import { Link, Await, useAsyncValue, useLoaderData } from "react-router-dom";
 import Youtube from "react-youtube";
-import BandContext from "../BandProvider";
-type SongIdParam = { id: string };
+import { SongType } from "../loaders";
+
+import { ReactCsspin } from "react-csspin";
+import 'react-csspin/dist/style.css';
+
 const Player = () => {
   const navigate = useNavigate();
-  const value = useContext(BandContext);
-  const params = useParams<SongIdParam>();
-  const id = params.id ? parseInt(params.id, 10) : 0;
-  const song = value && value.songs.find((song) => song.id === id);
+  const song = useAsyncValue() as SongType;
   if (!song) navigate("/songs");
+
   const [title] = useState<string>(song?.title ? song.title : "");
   const [youtubeLink] = useState<string>(song?.youtube_link ? song.youtube_link : "");
 
@@ -32,4 +33,21 @@ const Player = () => {
     </div>
   );
 };
+
+type DeferredOneSongDataType = { song: Promise<SongType> }
+
+const PlayerSuspense = ()=> {
+  const data = useLoaderData() as DeferredOneSongDataType;
+  
+  return (
+    <React.Suspense fallback={<ReactCsspin />}>
+      <Await resolve={data.song}>
+        <Player />
+      </Await>
+    </React.Suspense>
+  )
+}
+
+export { PlayerSuspense };
+
 export default Player;

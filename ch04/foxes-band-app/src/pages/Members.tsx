@@ -1,11 +1,14 @@
-import { useContext } from "react";
-import BandContext from "../BandProvider";
+import { Suspense } from "react";
+import { MemberType } from "../loaders";
+import { Await, useAsyncValue, useLoaderData } from "react-router-dom";
+import { ReactCsspin } from "react-csspin";
+import "react-csspin/dist/style.css";
 
 const Members = () => {
-  const value = useContext(BandContext);
+  const members = useAsyncValue() as MemberType[];
 
   const imgstyle = { width: 90, height: 80 };
-  const list = value && value.members.map((member) => {
+  const list = members.map((member) => {
     return (
       <div className="col-6 col-md-4 col-lg-3" key={member.name}>
         <img src={member.photo} className="img-thumbnail" alt={member.name} style={imgstyle} />
@@ -16,7 +19,7 @@ const Members = () => {
       </div>
     );
   });
-  
+
   return (
     <div>
       <h2 className="m-4">Members</h2>
@@ -27,4 +30,19 @@ const Members = () => {
   );
 };
 
+type DeferredMembersDataType = { members: Promise<MemberType[]> };
+
+const MembersSuspense = () => {
+  const data = useLoaderData() as DeferredMembersDataType;
+
+  return (
+    <Suspense fallback={<ReactCsspin />}>
+      <Await resolve={data.members}>
+        <Members />
+      </Await>
+    </Suspense>
+  );
+};
+
+export { MembersSuspense };
 export default Members;
