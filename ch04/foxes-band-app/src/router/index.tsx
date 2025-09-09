@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Home from "../pages/Home";
-import About from "../pages/About";
+//import About from "../pages/About";
 import { MembersSuspense } from "../pages/Members";
 import { SongListSuspense } from "../pages/SongList";
 import { PlayerSuspense } from "../components/Player";
@@ -11,6 +11,10 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import { addSongAction, updateSongAction } from "../actions";
 import { UpdateSongSuspense } from "../pages/UpdateSong";
 import AddSong from "../pages/AddSong";
+import { lazy } from "react";
+import pMinDelay from "p-min-delay";
+
+const About = lazy(() => pMinDelay(import("../pages/About"), 1000));
 
 const router = createBrowserRouter([
   {
