@@ -4,7 +4,7 @@ import Home from "../pages/Home";
 import About from "../pages/About";
 import Members from "../pages/Members";
 import SongList from "../pages/SongList";
-import SongDetail from "../pages/SongDetail";
+import Player from "../components/Player";
 
 const router = createBrowserRouter([
   {
@@ -14,8 +14,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "about", element: <About title={"여우와 늑다리들"} /> },
       { path: "members", element: <Members /> },
-      { path: "songs", element: <SongList /> },
-      { path: "songs/:id", element: <SongDetail /> },
+      { path: "songs", element: <SongList />, children: [{ path: ":id", element: <Player /> }] },
     ],
   },
 ]);
