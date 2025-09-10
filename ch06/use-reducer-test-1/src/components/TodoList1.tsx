@@ -1,26 +1,22 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
+import TodoReducer, { TodoActionCreator, TodoItemType } from "../TodoReducer";
 
-type TodoItemType = {
-  id: number;
-  todo: string;
-};
+const initialTodoList1: TodoItemType[] = [
+  { id: 1, todo: "운동1" },
+  { id: 2, todo: "독서1" },
+  { id: 3, todo: "음악감상1" },
+];
 
 const TodoList1 = () => {
+  const [todoList, dispatchTodoList] = useReducer(TodoReducer, initialTodoList1);
   const [todo, setTodo] = useState<string>("");
-  const [todoList, setTodoList] = useState<TodoItemType[]>([
-    { id: 1, todo: "운동1" },
-    { id: 2, todo: "독서1" },
-    { id: 3, todo: "음악감상1" },
-  ]);
 
   const addTodo = () => {
-    const newTodoList = [...todoList, { id: new Date().getTime(), todo: todo }];
-    setTodoList(newTodoList);
+    dispatchTodoList(TodoActionCreator.addTodo(todo));
     setTodo("");
   };
   const deleteTodo = (id: number) => {
-    const newTodoList = todoList.filter((todoItem) => todoItem.id !== id);
-    setTodoList(newTodoList);
+    dispatchTodoList(TodoActionCreator.deleteTodo(id));
   };
 
   return (
