@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 type TodoListItemType = {
   id: number;
@@ -14,18 +14,27 @@ const App = () => {
   const [todoList, setTodoList] = useState<Array<TodoListItemType>>([]);
   const [todo, setTodo] = useState<string>("");
 
-  const addTodo = (todo: string) => {
-    const newTodoList = [...todoList, { id: new Date().getTime(), todo: todo }];
-    setTodoList(newTodoList);
-    setTodo("");
-  };
+  //의존값으로 지정된 todoList가 바뀌면 함수를 다시 호출하여 값을 캐싱함
+  const memoizedCount = useMemo<number>(() => getTodoListCount(todoList), [todoList]);
 
-  const deleteTodo = (id: number) => {
-    const index = todoList.findIndex((item) => item.id === id);
-    const newTodoList = [...todoList];
-    newTodoList.splice(index, 1);
-    setTodoList(newTodoList);
-  };
+  const addTodo = useCallback(
+    (todo: string) => {
+      const newTodoList = [...todoList, { id: new Date().getTime(), todo: todo }];
+      setTodoList(newTodoList);
+      setTodo("");
+    },
+    [todoList]
+  );
+
+  const deleteTodo = useCallback(
+    (id: number) => {
+      const index = todoList.findIndex((item) => item.id === id);
+      const newTodoList = [...todoList];
+      newTodoList.splice(index, 1);
+      setTodoList(newTodoList);
+    },
+    [todoList]
+  );
 
   return (
     <div className="boxStyle">
@@ -40,7 +49,7 @@ const App = () => {
           </li>
         ))}
       </ul>
-      <div>todo 개수 : {getTodoListCount(todoList)}</div>
+      <div>todo 개수 : {memoizedCount}</div>
     </div>
   );
 };
